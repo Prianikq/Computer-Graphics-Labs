@@ -1,0 +1,10 @@
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\bin\Debug\cglab-demo.exe.config
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\bin\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\bin\Debug\cglab-demo.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\bin\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\bin\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\obj\Debug\cglab1-demo.csproj.AssemblyReference.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\obj\Debug\cglab1-demo.csproj.CoreCompileInputs.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\obj\Debug\cglab1-demo.csproj.CopyComplete
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\obj\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-demo\cglab1\obj\Debug\cglab-demo.pdb

@@ -1,0 +1,12 @@
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\CGLabPlatform\bin\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\CGLabPlatform\bin\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.csproj.AssemblyReference.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.csproj.CoreCompileInputs.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\src_1-3\CGLabPlatform\bin\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\src_1-3\CGLabPlatform\bin\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.csproj.AssemblyReference.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.csproj.CoreCompileInputs.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\src_1-3\CGLabPlatform\obj\Debug\CGLabPlatform.pdb
