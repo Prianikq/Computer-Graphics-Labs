@@ -1,6 +1,6 @@
 ﻿//#define UseOpenGL // Раскомментировать для использования OpenGL
 #if (!UseOpenGL)
-using Device     = CGLabPlatform.GDIDevice;
+using Device = CGLabPlatform.GDIDevice;
 using DeviceArgs = CGLabPlatform.GDIDeviceUpdateArgs;
 #else
 using Device     = CGLabPlatform.OGLDevice;
@@ -22,7 +22,7 @@ using CGLabPlatform;
 using CGApplication = MyApp;
 using System.ComponentModel;
 
-public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, DeviceArgs>
+public abstract class MyApp : CGApplicationTemplate<CGApplication, Device, DeviceArgs>
 {
     #region Классы
     public class Vertex
@@ -71,26 +71,27 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
     private DVector3 _Rotation;
     private DVector3 _Offset;
     private DVector3 _Scale;
-    
+
     [Flags]
     private enum Commands : int
     {
         None = 0,
         Transform = 1 << 0,
         FigureChange = 1 << 1,
-        ShadingChange = 1 << 2,
-        NewFigure = 1 << 3
+        NewFigure = 1 << 2,
+        ShadingChange = 1 << 3
     }
 
     #region Свойства
     [DisplayNumericProperty(Default: new[] { 1d, 0, 0, 0,
                                              0, 1d, 0, 0,
-                                             0, 0, 1d, 0, 
-                                             0, 0, 0, 1d }, 0.01, 4,  null)]
-    public DMatrix4 PointTransform 
+                                             0, 0, 1d, 0,
+                                             0, 0, 0, 1d }, 0.01, 4, null)]
+    public DMatrix4 PointTransform
     {
         get { return _PointTransform; }
-        set {
+        set
+        {
             if (value == _PointTransform)
                 return;
             _PointTransform = value;
@@ -137,14 +138,15 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
             }
         }
     }
-    public int approx0, approx1; 
+    public int approx0, approx1;
 
 
     [DisplayNumericProperty(Default: new[] { 0d, 0d, 0d }, Increment: 0.1, Name: "Смещение")]
     public DVector3 Offset
     {
         get { return _Offset; }
-        set {
+        set
+        {
             if (Set<DVector3>(value))
             {
                 _Offset = value;
@@ -153,11 +155,12 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         }
     }
 
-    [DisplayNumericProperty(Default: new[] { 0d, 0d, 0d },  Increment: 1, Name: "Поворот")]
-    public DVector3 Rotation 
+    [DisplayNumericProperty(Default: new[] { 0d, 0d, 0d }, Increment: 1, Name: "Поворот")]
+    public DVector3 Rotation
     {
         get { return _Rotation; }
-        set {
+        set
+        {
             if (Set<DVector3>(value))
             {
                 _Rotation = value;
@@ -196,7 +199,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
     }
 
     [DisplayEnumListProperty(Projection.NotSet, Name: "Проекция")]
-    public Projection CurProjection 
+    public Projection CurProjection
     {
         get { return Get<Projection>(); }
         set
@@ -437,7 +440,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         _PointTransform *= offset;
 
         _Commands |= Commands.Transform;
-        
+
     }
     public void Create()
     {
@@ -475,7 +478,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
             }
             height += second_step;
         }
-        
+
         vertices[vertices.Length - 2] = new Vertex(new[] { 0, 0, middle, 1 });
         vertices[vertices.Length - 1] = new Vertex(new[] { 0, 0, middle - height + second_step, 1 });
 
@@ -486,11 +489,11 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
             {
                 polygons[pol_indx] = new Polygon(new Vertex[] { vertices[(k - 1) * approx0 + (i + 1 == approx0 ? 0 : i + 1)],
                                                        vertices[(k - 1) * approx0 + i],
-                                                       vertices[k * approx0 + i] }, polygons[pol_indx].RandomColor );
+                                                       vertices[k * approx0 + i] }, polygons[pol_indx].RandomColor);
                 ++pol_indx;
                 polygons[pol_indx] = new Polygon(new Vertex[] { vertices[k * approx0 + (i + 1 == approx0 ? 0 : i + 1)],
                                                            vertices[(k - 1) * approx0 + (i + 1 == approx0 ? 0 : i + 1)],
-                                                           vertices[k * approx0 + i] }, polygons[pol_indx].RandomColor );
+                                                           vertices[k * approx0 + i] }, polygons[pol_indx].RandomColor);
                 ++pol_indx;
             }
         }
@@ -498,7 +501,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         /* Полигоны верхнего основания */
         for (int i = 1; i < approx0; ++i)
         {
-            polygons[pol_indx] = new Polygon(new Vertex[] { vertices[i - 1], vertices[i], vertices[vertices.Length - 2]  }, polygons[pol_indx].RandomColor);
+            polygons[pol_indx] = new Polygon(new Vertex[] { vertices[i - 1], vertices[i], vertices[vertices.Length - 2] }, polygons[pol_indx].RandomColor);
             ++pol_indx;
         }
         polygons[pol_indx] = new Polygon(new Vertex[] { vertices[vertices.Length - 2], vertices[approx0 - 1], vertices[0] }, polygons[pol_indx].RandomColor);
@@ -508,10 +511,10 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         int down_indx = approx0 * (approx1 - 1);
         for (int i = 1; i < approx0; ++i)
         {
-            polygons[pol_indx] = new Polygon(new Vertex[] {vertices[vertices.Length - 1], vertices[down_indx + i], vertices[down_indx + i - 1] }, polygons[pol_indx].RandomColor);
+            polygons[pol_indx] = new Polygon(new Vertex[] { vertices[vertices.Length - 1], vertices[down_indx + i], vertices[down_indx + i - 1] }, polygons[pol_indx].RandomColor);
             ++pol_indx;
         }
-        polygons[pol_indx] = new Polygon(new Vertex[] { vertices[down_indx + 0], vertices[down_indx + approx0 - 1], vertices[vertices.Length - 1]  }, polygons[pol_indx].RandomColor);
+        polygons[pol_indx] = new Polygon(new Vertex[] { vertices[down_indx + 0], vertices[down_indx + approx0 - 1], vertices[vertices.Length - 1] }, polygons[pol_indx].RandomColor);
         ++pol_indx;
 
         foreach (var p in polygons)
@@ -552,7 +555,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         if (DVector4.DotProduct(L, normal) > 0)
         {
             DVector4 S = new DVector4(Center.X - point.X, Center.Y - point.Y, -1000 - point.Z, 0);
-            DVector4 R = new DVector4(DVector3.Reflect((DVector3) (-L), (DVector3)normal), 0);
+            DVector4 R = new DVector4(DVector3.Reflect((DVector3)(-L), (DVector3)normal), 0);
             S.Normalize();
             R.Normalize();
 
@@ -569,7 +572,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         I_blue = Math.Min(1, I_blue);
 
         return new double[] { I_red, I_green, I_blue };
-        
+
     }
 
     public void LightCalculation()
@@ -592,7 +595,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         }
         else if (CurVisual == Visualization.GuroShading)
         {
-            foreach(var v in vertices)
+            foreach (var v in vertices)
             {
                 DVector4 v_normal = new DVector4(0, 0, 0, 0);
                 foreach (var p in v.polygons)
@@ -609,7 +612,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
     protected DVector2 FromViewToPhysicalSpace(DVector4 point)
     {
         DVector2 result = new DVector2();
-        result.X = point.X  / point.W;
+        result.X = point.X / point.W;
         result.Y = point.Y / point.W;
         result.X = result.X * AutoScale.X + Automove.X; // Преобразование координат из видового пространства в физическое
         result.Y = result.Y * AutoScale.Y + Automove.Y;
@@ -624,9 +627,9 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         base.RenderDevice.BufferBackCol = 0x20;
 
         base.RenderDevice.MouseMoveWithRightBtnDown += (s, e)
-        => Offset += new DVector3(0.001*Math.Abs(_Scale.X)*e.MovDeltaX, 0.001*Math.Abs(_Scale.Y)*e.MovDeltaY, 0);
+        => Offset += new DVector3(0.001 * Math.Abs(_Scale.X) * e.MovDeltaX, 0.001 * Math.Abs(_Scale.Y) * e.MovDeltaY, 0);
         base.RenderDevice.MouseMoveWithLeftBtnDown += (s, e)
-        => Rotation += new DVector3(0.1 * e.MovDeltaY, 0.1 * e.MovDeltaX , 0);
+        => Rotation += new DVector3(0.1 * e.MovDeltaY, 0.1 * e.MovDeltaX, 0);
         base.RenderDevice.MouseWheel += (s, e) => Scale += new DVector3(0.001 * e.Delta, 0.001 * e.Delta, 0.001 * e.Delta);
         Create();
     }
@@ -634,7 +637,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
 
     protected override void OnDeviceUpdate(object s, DeviceArgs e)
     {
-        if (0 != ((int) _Commands & (int)Commands.NewFigure))
+        if (0 != ((int)_Commands & (int)Commands.NewFigure))
         {
             _Commands ^= Commands.NewFigure;
             Create();
@@ -663,7 +666,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         Automove.X = e.Width / 2 - (x_min + x_max) / 2 * AutoScale.X;
         Automove.Y = e.Heigh / 2 - (y_min + y_max) / 2 * AutoScale.Y;
 
-        if (0 != ((int) _Commands & (int) Commands.Transform))
+        if (0 != ((int)_Commands & (int)Commands.Transform))
         {
             _Commands ^= Commands.Transform;
             // Пересчет преобразования вектора нормали
@@ -685,12 +688,12 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
             _Commands |= Commands.ShadingChange;
         }
 
-        if (0 != ((int) _Commands & (int) Commands.ShadingChange))
+        if (0 != ((int)_Commands & (int)Commands.ShadingChange))
         {
             _Commands ^= Commands.ShadingChange;
             LightCalculation();
         }
-        
+
         foreach (var p in polygons)
         {
             if (!p.IsVisible)
@@ -719,7 +722,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
                 DVector2 v1 = FromViewToPhysicalSpace(p.vertecies[0].Point_InWorldSpace);
                 DVector2 v2 = FromViewToPhysicalSpace(p.vertecies[1].Point_InWorldSpace);
                 DVector2 v3 = FromViewToPhysicalSpace(p.vertecies[2].Point_InWorldSpace);
-                e.Surface.DrawTriangle(p.vertecies[0].LightColor.ToArgb(), v1.X, v1.Y, 
+                e.Surface.DrawTriangle(p.vertecies[0].LightColor.ToArgb(), v1.X, v1.Y,
                                         p.vertecies[1].LightColor.ToArgb(), v2.X, v2.Y,
                                         p.vertecies[2].LightColor.ToArgb(), v3.X, v3.Y);
             }
@@ -735,7 +738,7 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
         if (IsLightSource)
         {
             DVector2 LightInPhysicalSpace = FromViewToPhysicalSpace(LightPos_InWorldSpace);
-            e.Surface.DrawTriangle(Color.Orange.ToArgb(), new DVector2(LightInPhysicalSpace.X, LightInPhysicalSpace.Y), 
+            e.Surface.DrawTriangle(Color.Orange.ToArgb(), new DVector2(LightInPhysicalSpace.X, LightInPhysicalSpace.Y),
                                                           new DVector2(LightInPhysicalSpace.X + 20, LightInPhysicalSpace.Y),
                                                           new DVector2(LightInPhysicalSpace.X + 10, LightInPhysicalSpace.Y + 10));
         }
@@ -743,4 +746,4 @@ public abstract class MyApp: CGApplicationTemplate<CGApplication, Device, Device
 }
 // ==================================================================================
 public abstract class AppMain : CGApplication
-{ [STAThread] static void Main() { RunApplication(); } }
+{[STAThread] static void Main() { RunApplication(); } }
