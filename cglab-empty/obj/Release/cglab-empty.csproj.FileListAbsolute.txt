@@ -1,0 +1,8 @@
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\bin\Release\cglab-demo.exe.config
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\bin\Release\cglab-demo.exe
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\bin\Release\cglab-demo.pdb
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\bin\Release\CGLabPlatform.dll
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\bin\Release\CGLabPlatform.pdb
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\obj\Release\cglab-empty.csprojResolveAssemblyReference.cache
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\obj\Release\cglab-demo.exe
+C:\Projects\mai-computer-graphics\trunk\C#\cglab-empty\obj\Release\cglab-demo.pdb

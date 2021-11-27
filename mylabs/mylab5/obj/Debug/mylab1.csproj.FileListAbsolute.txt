@@ -1,0 +1,10 @@
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\bin\Debug\cglab-demo.exe.config
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\bin\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\bin\Debug\cglab-demo.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\bin\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\bin\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\mylab1.csproj.AssemblyReference.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\mylab1.csproj.CoreCompileInputs.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\mylab1.csproj.CopyComplete
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\cglab-demo.pdb

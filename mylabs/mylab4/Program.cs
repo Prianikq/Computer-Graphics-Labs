@@ -268,6 +268,12 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
 
     #endregion
 
+    #region Поля для работы с шейдерами
+    private uint prog_shader;
+    private uint vert_shader, frag_shader;
+    private int attrib_coord, attrib_color, uniform_colour;
+    #endregion
+
     #region Методы
     private void UpdateTransformMatrix()
     {

@@ -546,7 +546,6 @@ public abstract class MyApp : CGApplicationTemplate<CGApplication, Device, Devic
         double I_blue = Ia_Material.Z * Ka_Material.Z;
 
         /* Рассеянная составляющая */
-
         I_red += Math.Min(1, Math.Max(0, Il_Material.X * (Kd_Material.X * DVector4.DotProduct(L, normal)) / (Parameters[0] * distance + Parameters[1])));
         I_green += Math.Min(1, Math.Max(0, Il_Material.Y * (Kd_Material.Y * DVector4.DotProduct(L, normal)) / (Parameters[0] * distance + Parameters[1])));
         I_blue += Math.Min(1, Math.Max(0, Il_Material.Z * (Kd_Material.Z * DVector4.DotProduct(L, normal)) / (Parameters[0] * distance + Parameters[1])));

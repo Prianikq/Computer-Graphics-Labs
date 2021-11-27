@@ -1,0 +1,10 @@
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\bin\Debug\cglab-demo.exe.config
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\bin\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\bin\Debug\cglab-demo.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\bin\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\bin\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\obj\Debug\mylab5.csproj.AssemblyReference.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\obj\Debug\mylab5.csproj.CoreCompileInputs.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\obj\Debug\mylab5.csproj.CopyComplete
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\obj\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab5\obj\Debug\cglab-demo.pdb
