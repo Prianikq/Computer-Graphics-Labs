@@ -46,7 +46,6 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
     {
         DVector4 check = new DVector4(vertex.nx, vertex.ny, vertex.nz, 0);
         check += normale;
-        check.Normalize();
         vertex.nx = (float) check.X;
         vertex.ny = (float) check.Y;
         vertex.nz = (float) check.Z;
@@ -64,7 +63,8 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         FigureChange = 1 << 1,
         NewFigure = 1 << 3,
         ChangeProjectionMatrix = 1 << 4,
-        ShadingChange = 1 << 5
+        ShadingChange = 1 << 5,
+        ChangeLightPos = 1 << 6
     }
     private Commands _Commands = Commands.FigureChange;
 
@@ -224,6 +224,13 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
 
     #region Свойства освещения
 
+    [DisplayCheckerProperty(Default: false, Name: "Показывать источник света")]
+    public abstract bool isLightActive { get; set; }
+
+    [DisplayCheckerProperty(Default: false, Name: "Показывать нормали вершин")]
+    public abstract bool isNormalActive { get; set; }
+
+
     [DisplayNumericProperty(Default: new[] { 0.68d, 0.85d, 0.90d }, Minimum: 0d, Maximum: 1d, Increment: 0.01d, Name: "Цвет материала")]
     public DVector3 MaterialColor {
         get { return Get<DVector3>(); }
@@ -322,11 +329,16 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         {
             if (Set<DVector3>(value))
             {
-                _Commands |= Commands.ShadingChange;
+                _Commands |= Commands.ChangeLightPos;
             }
         }
     }
     public DVector4 LightPos_InWorldSpace;
+    public uint[] LightVertexBuffer = new uint[1];
+    public uint[] LightIndexBuffer = new uint[1];
+
+    public uint[] LightIndexValues = new uint[1] { 0 };
+    public double[] LightVertexArray;
 
     [DisplayNumericProperty(Default: new[] { 0.1d, 0.35d }, Minimum: 0.01d, Maximum: 100d, Increment: 0.01d, Name: "md, mk")]
     public DVector2 Parameters
@@ -394,7 +406,7 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
     private int uniform_LightPos, uniform_Parameters, uniform_CameraPos;
     private int uniform_FragColor;
 
-    private int uniform_Projection, uniform_ModelView, uniform_NormalMatrix;
+    private int uniform_Projection, uniform_ModelView, uniform_NormalMatrix, uniform_PointMatrix;
 
     private int attribute_normale, attribute_coord;
 
@@ -404,11 +416,17 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
 
     public Vertex[] vertices;
     public uint[] indices;
-    public uint[] vertexBuffer;
-    public uint[] indexBuffer;
+    public uint[] vertexBuffer = new uint[1];
+    public uint[] indexBuffer = new uint[1];
+
+    public DVector4[] normalPoints;
+    public uint[] normalIndices;
+    public uint[] normalDataBuffer = new uint[1];
+    public uint[] normalIndexBuffer = new uint[1];
 
 
-    public DMatrix4 pMatrix;
+
+public DMatrix4 pMatrix;
 
 
     #region Работа со светом
@@ -424,7 +442,8 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         gl.Uniform3(uniform_Ia_Material, (float)Ia_Material.X, (float)Ia_Material.Y, (float)Ia_Material.Z);
         gl.Uniform3(uniform_Il_Material, (float)Il_Material.X, (float)Il_Material.Y, (float)Il_Material.Z);
 
-        LightPos_InWorldSpace = _PointTransform * (new DVector4(LightPos, 0));
+        DVector4 LightPosV4 = new DVector4(LightPos, 1);
+        LightPos_InWorldSpace = _PointTransform * LightPosV4;
         gl.Uniform3(uniform_LightPos, (float)LightPos_InWorldSpace.X, (float)LightPos_InWorldSpace.Y, (float)LightPos_InWorldSpace.Z);
         gl.Uniform2(uniform_Parameters, (float)Parameters.X, (float)Parameters.Y);
         gl.Uniform3(uniform_CameraPos, (float)CameraPos.X, (float)CameraPos.Y, (float)CameraPos.Z);
@@ -482,6 +501,8 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         approx1 = (int) Approximation[1];
         vertices = new Vertex[approx0 * approx1 + 2];
         indices = new uint[2 + approx0 + (approx1 - 1) * 2 * (approx0 + 1) + 2 + approx0];
+        normalPoints = new DVector4[(approx0 * approx1 + 2) * 2];
+        normalIndices = new uint[(approx0 * approx1 + 2) * 2];
     }
     private void Generate(DeviceArgs e)
     {
@@ -535,8 +556,8 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             int indx1 = beg + i;
             int indx2 = (beg + i + 1 == beg + approx0 + 1? beg + 1 : (beg + i + 1));
             DVector4 vec1 = new DVector4(vertices[indx1].vx - vertices[beg].vx, vertices[indx1].vy - vertices[beg].vy, vertices[indx1].vz - vertices[beg].vz, 0);
-            DVector4 vec2 = new DVector4(vertices[indx2].vx - vertices[0].vx, vertices[indx2].vy - vertices[0].vy, vertices[indx2].vz - vertices[0].vz, 0);
-            DVector4 res = vec1 * vec2;
+            DVector4 vec2 = new DVector4(vertices[indx2].vx - vertices[beg].vx, vertices[indx2].vy - vertices[beg].vy, vertices[indx2].vz - vertices[beg].vz, 0);
+            DVector4 res = vec2 * vec1;
             res.Normalize();
 
             ChangeNormale(ref vertices[indx1], res);
@@ -570,8 +591,18 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
                 ChangeNormale(ref vertices[indx2], normale2);
                 ChangeNormale(ref vertices[indx3], normale2);
                 ChangeNormale(ref vertices[indx4], normale2);
-
             }
+        }
+
+        /* Нормализация нормалей вершин */
+        for (int i = 0; i < vertices.Length; ++i)
+        {
+            DVector4 vec4 = new DVector4(vertices[i].nx, vertices[i].ny, vertices[i].nz, vertices[i].nw);
+            vec4.Normalize();
+            vertices[i].nx = (float) vec4.X;
+            vertices[i].ny = (float) vec4.Y;
+            vertices[i].nz = (float) vec4.Z;
+            vertices[i].nw = (float) vec4.W;
         }
 
         /* Полигоны верхнего основания */
@@ -612,14 +643,27 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         indices[indx] = (uint) ( (approx1 - 1) * approx0 + 2 );
         ++indx;
 
-        /* Загузка буферов */
+
+        /* Инициализация массивов для отрисовки нормалей */
+        double normalLength = 0.25;
+        for (int i = 0; i < vertices.Length; ++i)
+        {
+            normalPoints[2 * i] = new DVector4(vertices[i].vx, vertices[i].vy, vertices[i].vz, vertices[i].vw);
+            normalPoints[2 * i + 1] = new DVector4(vertices[i].vx + normalLength * vertices[i].nx,
+                vertices[i].vy + normalLength * vertices[i].ny,
+                vertices[i].vz + normalLength * vertices[i].nz,
+                vertices[i].vw + normalLength * vertices[i].nw);
+        }
+        for (int i = 0; i < normalIndices.Length; ++i)
+        {
+            normalIndices[i] = (uint) i;
+        }
+
+        /* Загрузка буферов */
         var gl = e.gl;
-        vertexBuffer = new uint[1];
-        indexBuffer = new uint[1];
         unsafe
         {
             /* Обработка массива вершин */
-            gl.GenBuffers(1, vertexBuffer);
             gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, vertexBuffer[0]);
             fixed (Vertex* ptr = &vertices[0])
             {
@@ -627,11 +671,24 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             }
 
             /* Обработка индексного массива */
-            gl.GenBuffers(1, indexBuffer);
             gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, indexBuffer[0]);
             fixed (uint* ptr = &indices[0])
             {
                 gl.BufferData(OpenGL.GL_ELEMENT_ARRAY_BUFFER, indices.Length * sizeof(uint), (IntPtr)ptr, OpenGL.GL_STATIC_DRAW);
+            }
+
+            /* Обработка массива нормалей */
+            gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, normalDataBuffer[0]);
+            fixed (DVector4* ptr = &normalPoints[0])
+            {
+                gl.BufferData(OpenGL.GL_ARRAY_BUFFER, normalPoints.Length * sizeof(DVector4), (IntPtr)ptr, OpenGL.GL_STATIC_DRAW);
+            }
+
+            /* Обработка индексного массива нормалей */
+            gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, normalIndexBuffer[0]);
+            fixed (uint* ptr = &normalIndices[0])
+            {
+                gl.BufferData(OpenGL.GL_ELEMENT_ARRAY_BUFFER, normalIndices.Length * sizeof(uint), (IntPtr)ptr, OpenGL.GL_STATIC_DRAW);
             }
         }
 
@@ -643,7 +700,7 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         var gl = e.gl;
         
         gl.MatrixMode(OpenGL.GL_PROJECTION);
-        pMatrix = Perspective(FieldVision, (double)e.Width / e.Heigh, ClippingPlanes.X, ClippingPlanes.Y);
+        pMatrix = Perspective(FieldVision, 1, ClippingPlanes.X, ClippingPlanes.Y);
         gl.LoadMatrix(pMatrix.ToArray(true));
     }    
 
@@ -696,8 +753,8 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         ModelViewMatrix = vMatrix * mMatrix;
         gl.LoadMatrix(ModelViewMatrix.ToArray(true));
 
-        // матрица преобразования вектора
-        NormalMatrix = DMatrix3.NormalVecTransf(ModelViewMatrix);
+        // Матрица преобразования вектора
+        NormalMatrix = DMatrix3.NormalVecTransf(mMatrix);
 
     }
 
@@ -769,6 +826,17 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             gl.DepthFunc(OpenGL.GL_LEQUAL);
             gl.ClearDepth(1.0f);
             gl.ClearStencil(0);
+
+            gl.GenBuffers(1, vertexBuffer);
+            gl.GenBuffers(1, indexBuffer);
+
+            gl.GenBuffers(1, LightVertexBuffer);
+            gl.GenBuffers(1, LightIndexBuffer);
+
+            gl.GenBuffers(1, normalDataBuffer);
+            gl.GenBuffers(1, normalIndexBuffer);
+
+
         });
 
 
@@ -842,6 +910,7 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
 
         #endregion
 
+
         #region Связывание аттрибутов и юниформ ------------------
 
         RenderDevice.AddScheduleTask((gl, s) => {
@@ -856,13 +925,13 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             if (uniform_Kd_Material < 0)
                 throw new Exception("OpenGL Error: не удалость связать аттрибут Kd_Material");
 
-            /*uniform_Ks_Material = gl.GetUniformLocation(prog_shader, "Ks_Material");
+            uniform_Ks_Material = gl.GetUniformLocation(prog_shader, "Ks_Material");
             if (uniform_Ks_Material < 0)
-                throw new Exception("OpenGL Error: не удалость связать аттрибут Ks_Material");*/
+                throw new Exception("OpenGL Error: не удалость связать аттрибут Ks_Material");
 
-            /*uniform_P_Material = gl.GetUniformLocation(prog_shader, "P_Material");
+            uniform_P_Material = gl.GetUniformLocation(prog_shader, "P_Material");
             if (uniform_P_Material < 0 )
-                throw new Exception("OpenGL Error: не удалость связать аттрибут P_Material");*/
+                throw new Exception("OpenGL Error: не удалость связать аттрибут P_Material");
 
             uniform_Ia_Material = gl.GetUniformLocation(prog_shader, "Ia_Material");
             if (uniform_Ia_Material < 0)
@@ -880,9 +949,9 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             if (uniform_Parameters < 0)
                 throw new Exception("OpenGL Error: не удалость связать аттрибут Parameters");
 
-            /*uniform_CameraPos = gl.GetUniformLocation(prog_shader, "CameraPos");
+            uniform_CameraPos = gl.GetUniformLocation(prog_shader, "CameraPos");
             if (uniform_CameraPos < 0)
-                throw new Exception("OpenGL Error: не удалость связать аттрибут CameraPos");*/
+                throw new Exception("OpenGL Error: не удалость связать аттрибут CameraPos");
 
             /* Использующиеся в shader1.vert */
             attribute_normale = gl.GetAttribLocation(prog_shader, "Normal");
@@ -909,6 +978,10 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             if (uniform_NormalMatrix < 0)
                 throw new Exception("OpenGL Error: не удалость связать аттрибут NormalMatrix");
 
+            uniform_PointMatrix = gl.GetUniformLocation(prog_shader, "PointMatrix");
+            if (uniform_PointMatrix < 0)
+                throw new Exception("OpenGL Error: не удалость связать аттрибут PointMatrix");
+
         });
 
         #endregion
@@ -927,6 +1000,7 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         {
             _Commands ^= Commands.ChangeProjectionMatrix;
             UpdateProjectionMatrix(e);
+            _Commands |= Commands.Transform;
         }
 
         if (0 != ((int)_Commands & (int)Commands.NewFigure))
@@ -945,8 +1019,36 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         if (0 != ((int)_Commands & (int)Commands.Transform))
         {
             _Commands ^= Commands.Transform;
-
             UpdateModelViewMatrix(e);
+        }
+
+        if (0 != ((int)_Commands & (int) Commands.ChangeLightPos)) // Здесь загружаются данные света
+        {
+            _Commands ^= Commands.ChangeLightPos;
+
+            gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, LightVertexBuffer[0]);
+            DVector4 LightPosV4 = new DVector4(LightPos, 1);
+            unsafe
+            {
+                LightVertexArray = LightPosV4.ToArray();
+                
+                fixed (double* ptr = &LightVertexArray[0])
+                {
+                    gl.BufferData(OpenGL.GL_ARRAY_BUFFER, LightVertexArray.Length * sizeof(double), (IntPtr) ptr, OpenGL.GL_STATIC_DRAW);
+                }
+            }
+
+            gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, LightIndexBuffer[0]);
+            unsafe
+            {
+                fixed (uint* ptr = &LightIndexValues[0])
+                {
+                    gl.BufferData(OpenGL.GL_ELEMENT_ARRAY_BUFFER, LightIndexValues.Length * sizeof(uint), (IntPtr)ptr, OpenGL.GL_STATIC_DRAW);
+                }
+            }
+
+            LightPos_InWorldSpace = _PointTransform * LightPosV4;
+
         }
 
         // Задание способа визуализации
@@ -968,10 +1070,14 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         else if (CurVisual == Visualization.NoPolygons)
         {
             gl.PolygonMode(OpenGL.GL_FRONT, OpenGL.GL_LINE);
+            gl.Color(MaterialColor.X, MaterialColor.Y, MaterialColor.Z);
+        }
+        else if (CurVisual == Visualization.PhongShading)
+        {
+            gl.PolygonMode(OpenGL.GL_FRONT, OpenGL.GL_FILL);
         }
 
         /* Непосредственная отрисовка */
-
         gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, vertexBuffer[0]);
         gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, indexBuffer[0]);
 
@@ -983,6 +1089,7 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
             gl.UniformMatrix4(uniform_ModelView, 1, true, ConvertToFloatArray(ModelViewMatrix));
             gl.UniformMatrix4(uniform_Projection, 1, true, ConvertToFloatArray(pMatrix));
             gl.UniformMatrix4(uniform_NormalMatrix, 1, true, ConvertToFloatArray(NormalMatrix));
+            gl.UniformMatrix4(uniform_PointMatrix, 1, true, ConvertToFloatArray(_PointTransform));
 
             gl.EnableVertexAttribArray((uint)attribute_normale);
             gl.EnableVertexAttribArray((uint)attribute_coord);
@@ -994,6 +1101,7 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         }
         else
         {
+            gl.UseProgram(0);
             gl.EnableClientState(OpenGL.GL_VERTEX_ARRAY);
             unsafe
             {
@@ -1010,14 +1118,14 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
 
         if (CurVisual == Visualization.PhongShading)
         {
+            gl.DisableVertexAttribArray((uint)attribute_normale);
+            gl.DisableVertexAttribArray((uint)attribute_coord);
             gl.UseProgram(0);
         }
         else
         {
             gl.DisableClientState(OpenGL.GL_VERTEX_ARRAY);
         }
-
-
 
         gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, 0);
         gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -1026,6 +1134,46 @@ public abstract class MyApp : OGLApplicationTemplate<MyApp>
         {
             gl.DisableClientState(OpenGL.GL_COLOR_ARRAY);
         }
+
+        if (isLightActive)
+        {
+            gl.Color(0.99, 0, 0);
+            gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, LightVertexBuffer[0]);
+            gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, LightIndexBuffer[0]);
+            
+            gl.EnableClientState(OpenGL.GL_VERTEX_ARRAY);
+            unsafe
+            {
+                gl.VertexPointer(4, OpenGL.GL_DOUBLE, sizeof(DVector4), (IntPtr)0);
+            }
+            
+            gl.PointSize(10);
+            gl.DrawElements(OpenGL.GL_POINTS, 1, OpenGL.GL_UNSIGNED_INT, (IntPtr)0);
+            
+            gl.DisableClientState(OpenGL.GL_VERTEX_ARRAY);
+            gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, 0);
+            gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+
+        if (isNormalActive)
+        {
+            gl.Color(0, 0, 0.99);
+            gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, normalDataBuffer[0]);
+            gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, normalIndexBuffer[0]);
+
+            gl.EnableClientState(OpenGL.GL_VERTEX_ARRAY);
+            unsafe
+            {
+                gl.VertexPointer(4, OpenGL.GL_DOUBLE, sizeof(DVector4), (IntPtr)0);
+            }
+
+            gl.DrawElements(OpenGL.GL_LINES, normalPoints.Length, OpenGL.GL_UNSIGNED_INT, (IntPtr)0);
+
+            gl.DisableClientState(OpenGL.GL_VERTEX_ARRAY);
+            gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, 0);
+            gl.BindBuffer(OpenGL.GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+
     }
 }
 // ==================================================================================

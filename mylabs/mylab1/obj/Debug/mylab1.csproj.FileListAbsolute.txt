@@ -8,3 +8,13 @@ C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\myl
 C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\mylab1.csproj.CopyComplete
 C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\cglab-demo.exe
 C:\Users\gabn3\Desktop\КОМП ГРАФ\ЛР1\src_1-3\cglab-empty\obj\Debug\cglab-demo.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\bin\Debug\cglab-demo.exe.config
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\bin\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\bin\Debug\cglab-demo.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\bin\Debug\CGLabPlatform.dll
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\bin\Debug\CGLabPlatform.pdb
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\obj\Debug\mylab1.csproj.AssemblyReference.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\obj\Debug\mylab1.csproj.CoreCompileInputs.cache
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\obj\Debug\mylab1.csproj.CopyComplete
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\obj\Debug\cglab-demo.exe
+C:\Users\gabn3\Desktop\КОМП ГРАФ\Лабы\mylabs\mylab1\obj\Debug\cglab-demo.pdb
